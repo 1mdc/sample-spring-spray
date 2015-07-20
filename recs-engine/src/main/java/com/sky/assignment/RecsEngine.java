@@ -3,17 +3,22 @@ package com.sky.assignment;
 import com.sky.assignment.filters.RecFilter;
 import com.sky.assignment.model.Recommendation;
 import com.sky.assignment.model.Recommendations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
+@CacheConfig(cacheNames = "recommendations")
 public class RecsEngine {
+    private static final Logger logger = LogManager.getLogger(RecsEngine.class);
 
     private static final int MAX_LOOPS = 10000;
     private static final int MIN_DURATION = 30;
@@ -26,10 +31,22 @@ public class RecsEngine {
 
     @Autowired
     public RecsEngine(RecFilter[] filters) {
+        for(RecFilter f : filters)
+            logger.info(String.format("Injected %s filter for generating recommendations",f.getClass()));
         this.filters = filters;
     }
 
-    public Recommendations recommend(long numberOfRecs, long start, long end) {
+    /**
+     * Generate multiple recommendations with start and end time
+     *
+     * @param subscriber subscriber who receives recommendation. This value is used for caching generated recommendations for each subscriber
+     * @param numberOfRecs number of recommendations to generate
+     * @param start start time of filtering recommendation
+     * @param end end time of filtering recommendation
+     * @return random recommendations
+     */
+    @Cacheable
+    public Recommendations recommend(String subscriber, long numberOfRecs, long start, long end) {
         List<Recommendation> recs = new ArrayList<Recommendation>();
         int loops = 0;
         do {
@@ -42,6 +59,11 @@ public class RecsEngine {
         return new Recommendations(recs);
     }
 
+    /**
+     * Generate one random recommendation
+     *
+     * @return a recommendation
+     */
     public Recommendation generate() {
         // generate random recommendation, with random start and end time
         DateTime start = randomStartTime();
