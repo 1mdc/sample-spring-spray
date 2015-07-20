@@ -19,9 +19,9 @@ To test Recs-Engine task: `mvn test`
 
 To run Recs-Engine task: `mvn spring-boot:run` and open url: `http://localhost:8080/recs/personalised?num=5&start=1436380686147&end=1477380686147&subscriber=asd`
 
-To test Recs-API task: `sbt test` 
+To test Recs-API task  (make sure you had Recs-Engine running first): `sbt test` 
 
-To run Recs-API task: `sbt run` and open url: `http://localhost:8090/personalised/asd`
+To run Recs-API task  (make sure you had Recs-Engine running first): `sbt run` and open url: `http://localhost:8090/personalised/asd`
 
 # Task: Recs-Engine
 
