@@ -12,9 +12,9 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-can" % "1.3.1",
   "io.spray" %% "spray-client" % "1.3.1",
   "io.spray" %% "spray-http" % "1.3.1",
+  "io.spray" %% "spray-json" % "1.3.1",
   "io.spray" %% "spray-httpx" % "1.3.1",
   "io.spray" %% "spray-routing" % "1.3.1",
-  "org.json4s" %% "json4s-native" % "3.2.10",
   "org.scalatest" %% "scalatest" % "2.2.0" % "test"
 )
 

@@ -43,7 +43,7 @@ object RecommendationAPI {
    * @param subscriber subscriber who retrieve recommendations
    * @return recommendations
    */
-  def getRecommendation(nbOfRequest:Int, nbOfRecomPerRequest:Int, subscriber:String):Seq[Recommendations] = {
+  def getRecommendation(nbOfRequest:Int, nbOfRecomPerRequest:Int, subscriber:String):Future[Seq[Recommendations]] = {
     var start = System.currentTimeMillis
     var end = System.currentTimeMillis + 60 * 60 * 1000
 
@@ -58,6 +58,6 @@ object RecommendationAPI {
     }
 
     //converting list of futures into future of a future of list of request and wait for the result
-    Await.result(Future.sequence(listPipelines),Duration.Inf)
+    Future.sequence(listPipelines)
   }
 }

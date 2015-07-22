@@ -16,7 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * Created by hoang on 20/07/15.
  */
-@Configuration
+@Configuration()
 @EnableCaching
 public class CachingConfig implements CachingConfigurer {
 

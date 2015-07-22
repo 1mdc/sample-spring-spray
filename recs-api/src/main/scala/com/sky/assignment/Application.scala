@@ -2,17 +2,15 @@ package com.sky.assignment
 
 import akka.actor.ActorSystem
 import com.sky.assignment.apis.RecommendationAPI
-import org.json4s.NoTypeHints
-import org.json4s.native.Serialization
 import org.slf4j.LoggerFactory
 import spray.routing.SimpleRoutingApp
-import org.json4s.native.Serialization.write
 
 object Application extends App with SimpleRoutingApp {
+
   val logger = LoggerFactory.getLogger(Application.getClass)
 
-  //we need this to write case class to JSON
-  implicit val jsonFormats = Serialization.formats(NoTypeHints)
+  //this is require to marshalling case class object in CustomJsonFormat. Because the returned object is in Future, so future context of akka needed to be passed in.
+  implicit def executionContext = actorRefFactory.dispatcher
 
   implicit val system = ActorSystem("recs")
 
@@ -20,7 +18,9 @@ object Application extends App with SimpleRoutingApp {
     path("personalised" / Segment) { subscriber =>
       get {
         complete {
-          write(RecommendationAPI.getRecommendation(3,5,subscriber))
+          //This is where I defined custom marshalling protocols
+          import models.CustomJsonFormat._
+          RecommendationAPI.getRecommendation(3,5,subscriber)
         }
       }
     }
